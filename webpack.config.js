@@ -1,14 +1,38 @@
 const path = require('path');
+const fs = require("fs");
+const nodeExternals = require('webpack-node-externals');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
-const nodeExternals  = require('webpack-node-externals');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
+function getEntries() {
+    function isDir(dir) {
+        return fs.lstatSync(dir).isDirectory();
+    }
+
+    const entries = {
+        index: path.join(__dirname, `components/index.ts`),
+    };
+    const dir = path.join(__dirname, "components");
+    const files = fs.readdirSync(dir);
+    files.forEach((file) => {
+        const absolutePath = path.join(dir, file);
+        if (isDir(absolutePath)) {
+            entries[file] = path.join(
+                __dirname,
+                `components/${file}/index.tsx`
+            );
+        }
+    });
+    return entries;
+}
+console.log(getEntries())
 const webpackConfigBase = {
-    context: path.resolve(__dirname),
+    context: __dirname,
     resolve: {
         extensions: ['.tsx', '.ts', '.js']
     },
-
-    //module此处为loader区域，一般文件内容解析，处理放在此处，如babel，less,postcss转换等
     module: {
         rules: [
             {
@@ -21,73 +45,90 @@ const webpackConfigBase = {
             {
                 test: /\.(less)?$/,
                 use: [
+                    //     {
+                    //     loader: 'style-loader'
+                    // },
                     {
-                        loader: "style-loader",
+                        loader: MiniCssExtractPlugin.loader,
                     },
                     {
                         loader: "css-loader",
                     },
                     {
-                        loader: "postcss-loader",
-                    },
-                    {
                         loader: 'less-loader',
                         options: {
-                            lessOptions:{
+                            lessOptions: {
                                 javascriptEnabled: true,
                             }
                         }
                     }
                 ]
+
+
             }
         ]
-    }
+    },
+    optimization: {
+        minimize: true,
+        minimizer: [
+          new CssMinimizerPlugin({
+              exclude: /node_modules/
+          }),
+        ],
+      },
 }
 
 let tempConfig = {};
 
 if (process.env.NODE_ENV === 'production') {
-  tempConfig = {
-    ...webpackConfigBase,
-    entry: path.resolve(__dirname, 'index.js'),
-    output: {
-        filename: 'index.js',
-        path: path.resolve(__dirname, 'dist'),
-        libraryTarget: 'commonjs2'
-    },
-    // devtool: 'source-map', 
-    // externals: {
-    //     "react": "React",
-    //     "react-dom": "ReactDOM"},
-    plugins: [
-      new CleanWebpackPlugin(), // 编译之前清空 /dist
-    ],
-  };
-} 
+    tempConfig = {
+        ...webpackConfigBase,
+        mode: 'production',
+        entry: getEntries(),
+        output: {
+            path: path.resolve(__dirname, 'dist'),
+            filename: (chunkData) => {
+                return chunkData.chunk.name === 'index' ? '[name].js' : 'components/[name]/index.js';
+            },
+            library: 'ziyong-ui',
+            libraryTarget: 'umd',
+        },
+        externals: [nodeExternals()],
+        plugins: [
+            new CleanWebpackPlugin(), // 编译之前清空 /dist
+            new MiniCssExtractPlugin({
+                filename: (chunkData) => {
+                    return chunkData.chunk.name === 'index' ? '[name].less' : 'components/[name]/[name].less';
+                }
+            }),
+            new UglifyJsPlugin({
+                test: /\.js($|\?)/i,
+                exclude: /node_modules/
+            })
+        ],
+    };
+}
 else {
-  tempConfig = {
-    ...webpackConfigBase,
-    entry: path.join(__dirname, 'example/src/index.tsx'),
-    output: {
-      path: path.join(__dirname, 'example/dist'),
-      filename: 'bundle.js',
-      library: 'laputarenderer',
-      libraryTarget: 'umd',
-    },
-    plugins: [
-      // 自动注入编译打包好的代码至 html
-      new HtmlWebpackPlugin({
-        template: path.join(__dirname, './example/src/index.html'),
-        filename: 'index.html',
-      }),
-    ],
-    externals: {
-        "react": "React",
-        "react-dom": "ReactDOM"},
-    devServer: {
-      // port: 8008,
-    },
-  }
+    tempConfig = {
+        ...webpackConfigBase,
+        entry: path.join(__dirname, 'example/src/index.tsx'),
+        output: {
+            path: path.join(__dirname, 'example/dist'),
+            filename: 'bundle.js',
+            library: 'ziyong-ui',
+            libraryTarget: 'umd',
+        },
+        plugins: [
+            // 自动注入编译打包好的代码至 html
+            new HtmlWebpackPlugin({
+                template: path.join(__dirname, './example/src/index.html'),
+                filename: 'index.html',
+            }),
+        ],
+        devServer: {
+            // port: 8008,
+        },
+    }
 }
 
 module.exports = tempConfig;

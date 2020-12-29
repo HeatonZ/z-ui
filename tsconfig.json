@@ -9,9 +9,17 @@
     "module": "esnext",
     "jsx": "react",
     "moduleResolution": "node",
-    "allowSyntheticDefaultImports": true
+    "allowSyntheticDefaultImports": true,
+    "baseUrl": "./",
+    "declaration": true,
+    "declarationDir": "dist/",
+    "outDir": "./dist/",
+    "noImplicitAny": true,
+    "skipLibCheck": true
   },
   "exclude": [
-    "node_modules"
+    "**/node_modules",
+    "node_modules",
+    "example",
   ]
 }
