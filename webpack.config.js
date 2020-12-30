@@ -21,13 +21,12 @@ function getEntries() {
         if (isDir(absolutePath)) {
             entries[file] = path.join(
                 __dirname,
-                `components/${file}/index.tsx`
+                `components/${file}/index.ts`
             );
         }
     });
     return entries;
 }
-console.log(getEntries())
 const webpackConfigBase = {
     context: __dirname,
     resolve: {
@@ -49,7 +48,7 @@ const webpackConfigBase = {
                     //     loader: 'style-loader'
                     // },
                     {
-                        loader: MiniCssExtractPlugin.loader,
+                        loader:process.env.NODE_ENV === 'production'? MiniCssExtractPlugin.loader:'style-loader',
                     },
                     {
                         loader: "css-loader",
@@ -111,6 +110,7 @@ if (process.env.NODE_ENV === 'production') {
 else {
     tempConfig = {
         ...webpackConfigBase,
+        mode:'development',
         entry: path.join(__dirname, 'example/src/index.tsx'),
         output: {
             path: path.join(__dirname, 'example/dist'),
@@ -119,15 +119,15 @@ else {
             libraryTarget: 'umd',
         },
         plugins: [
-            // 自动注入编译打包好的代码至 html
             new HtmlWebpackPlugin({
                 template: path.join(__dirname, './example/src/index.html'),
                 filename: 'index.html',
             }),
         ],
         devServer: {
-            // port: 8008,
-        },
+            port: 8081,
+            host: '127.0.0.1'
+        }
     }
 }
 
