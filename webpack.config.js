@@ -35,6 +35,13 @@ const webpackConfigBase = {
     module: {
         rules: [
             {
+                test: /\.(png)?$/,
+                exclude: /node_modules/,
+                use: {
+                    loader: 'url-loader'
+                }
+            },
+            {
                 test: /\.(js|ts|tsx)?$/,
                 exclude: /node_modules/,
                 use: {
@@ -122,6 +129,7 @@ else {
             new HtmlWebpackPlugin({
                 template: path.join(__dirname, './example/src/index.html'),
                 filename: 'index.html',
+                inject: true
             }),
         ],
         devServer: {

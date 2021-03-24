@@ -1,12 +1,17 @@
 import React from 'react'
 import { Button as _Button } from 'antd'
 import './button.less'
+
+const preset = ['primary','mark','pulse'] as const
 export interface ButtonProps{
-
+    preset?:typeof preset[number]
 }
-
-const Button: React.FC<ButtonProps> = () => {
-    return <_Button type="primary" className={'test'}>test</_Button>
+const prefix = 'z-btn'
+const Button: React.FC<ButtonProps & React.ButtonHTMLAttributes<HTMLButtonElement>> = (props) => {
+    const { className = "", preset = "",children } = props
+    return <>
+        <button {...props} className={`${prefix} ${preset?`${prefix}-${preset}`:''} ${className}`} />
+    </>
 }
 
 export default Button
