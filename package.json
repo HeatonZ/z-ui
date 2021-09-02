@@ -24,9 +24,6 @@
     "type": "git",
     "url": "https://github.com/HeatonZ/z-ui"
   },
-  "publishConfig": {
-    "registry": "https://npm.pkg.github.com/@heatonz"
-  },
   "scripts": {
     "start": "cross-env NODE_ENV=development webpack serve --host 0.0.0.0 --open",
     "build": "cross-env NODE_ENV=production webpack && cd dist && npx tsc -p ../tsconfig.json",

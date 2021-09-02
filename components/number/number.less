@@ -1,0 +1,181 @@
+@import '../style/style.less';
+
+
+.z-number-digital {
+    @size: 16px;
+    @color: #000;
+    @width: @size / 8 * 5;
+    @offset: (@size - @width) / 2 ;
+    @height: @size / 8 ;
+    @padding: 1px;
+    .border  {
+        content: "";
+        position: absolute;
+        border-style: solid;
+    }
+
+    .triangle() {
+
+    }
+    display: inline-block;
+    background-color: @color;
+    &-container{
+        width: @size;
+        height: @size * 2;
+        position: relative;
+    }
+    &-top{
+        position: absolute;
+        top: @padding;
+        left: @offset;
+        width: @width;
+        height: @height;
+        &::before{
+            .border();
+            left: -@height;
+            border-width: 0 @height  @height 0;
+            border-color: transparent @color transparent transparent;
+        }
+        &::after{
+            .border();
+            right: -@height;
+            border-width: @height @height 0 0 ;
+            border-color: @color transparent transparent transparent;
+        }
+        &-1, &-4{
+            visibility: hidden;
+        }
+    }
+    &-middle{
+        position: absolute;
+        top: @size - @height / 2;
+        left: @offset;
+        width: @width;
+        height: @height;
+        &::before{
+            .border();
+            left: -@height;
+            border-width: @height/2 @height @height/2 0 ;
+            border-color: transparent @color transparent transparent;
+        }
+        &::after{
+            .border();
+            right: -@height;
+            border-width: @height/2 0 @height/2  @height;
+            border-color: transparent transparent transparent @color ;
+        }
+        &-1, &-7, &-0{
+            visibility: hidden;
+        }
+    }
+    &-bottom{
+        position: absolute;
+        bottom: @padding;
+        left: @offset;
+        width: @width;
+        height: @height;
+        &::before{
+            .border();
+            left: -@height;
+            border-width: @height @height 0 0 ;
+            border-color: transparent @color transparent transparent;
+        }
+        &::after{
+            .border();
+            right: -@height;
+            border-width: 0 @height  @height 0;
+            border-color: transparent transparent @color transparent;
+        }
+        &-1, &-4, &-7{
+            visibility: hidden;
+        }
+    }
+    &-top-left{
+        position: absolute;
+        top: @offset + @padding;
+        left: @padding;
+        width: @height;
+        height: @width;
+        &::before{
+            .border();
+            top: -@height;
+            border-width: 0 @height  @height 0;
+            border-color: transparent transparent @color transparent;
+        }
+        &::after{
+            .border();
+            bottom: -@height;
+            border-width: @height @height 0 0 ;
+            border-color: @color transparent transparent transparent;
+        }
+        &-1, &-2, &-3, &-7{
+            visibility: hidden;
+        }
+    }
+    &-bottom-left{
+        position: absolute;
+        bottom: @offset + @padding;
+        left: @padding;
+        width: @height;
+        height: @width;
+        &::before{
+            .border();
+            top: -@height;
+            border-width: 0 @height  @height 0;
+            border-color: transparent transparent @color transparent;
+        }
+        &::after{
+            .border();
+            bottom: -@height;
+            border-width: @height @height 0 0 ;
+            border-color: @color transparent transparent transparent;
+        }
+        &-1, &-3, &-4, &-5, &-7, &-9{
+            visibility: hidden;
+        }
+    }
+    &-top-right{
+        position: absolute;
+        top: @offset + @padding;
+        right: @padding;
+        width: @height;
+        height: @width;
+        &::before{
+            .border();
+            top: -@height;
+            border-width: @height @height 0 0 ;
+            border-color: transparent @color transparent transparent;
+        }
+        &::after{
+            .border();
+            bottom: -@height;
+            border-width: 0 @height  @height 0;
+            border-color: transparent @color transparent transparent;
+        }
+        &-5, &-6{
+            visibility: hidden;
+        }
+    }
+    &-bottom-right{
+        position: absolute;
+        bottom: @offset + @padding;
+        right: @padding;
+        width: @height;
+        height: @width;
+        &::before{
+            .border();
+            top: -@height;
+            border-width: @height @height 0 0 ;
+            border-color: transparent @color transparent transparent;
+        }
+        &::after{
+            .border();
+            bottom: -@height;
+            border-width: 0 @height  @height 0;
+            border-color: transparent @color transparent transparent;
+        }
+        &-2{
+            visibility: hidden;
+        }
+    }
+}

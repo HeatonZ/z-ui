@@ -9,8 +9,11 @@ export interface ButtonProps{
 const prefix = 'z-btn'
 const Button: React.FC<ButtonProps & React.ButtonHTMLAttributes<HTMLButtonElement>> = (props) => {
     const { className = "", preset = "",children } = props
+    const defaultProps:ButtonProps & React.ButtonHTMLAttributes<HTMLButtonElement> = {
+        type:"button"
+    }
     return <>
-        <button {...props} className={`${prefix} ${preset?`${prefix}-${preset}`:''} ${className}`} />
+        <button {...defaultProps} {...props} className={`${prefix} ${preset?`${prefix}-${preset}`:''} ${className}`} />
     </>
 }
 

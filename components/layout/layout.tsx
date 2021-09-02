@@ -5,8 +5,8 @@ export interface LayoutProps{
 
 }
 
-const Layout: React.FC<LayoutProps> = () => {
-    return <_Button type="primary" className={'test'}>test</_Button>
+const Layout: React.FC<LayoutProps & React.HTMLAttributes<HTMLDivElement>> = (props) => {
+    return <div {...props} className="z-ui-layout" ></div>
 }
 
 export default Layout
